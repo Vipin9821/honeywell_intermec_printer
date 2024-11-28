@@ -10,6 +10,17 @@ class Honnywellintermecpr3 {
   ///String deviceBleutoothMacAdress,bleutooth device name
   ///List cmd , commande to send to printer
   ///
+  Future<dynamic> printGeneralWithExternalActivity(
+      String deviceName, String deviceBleutoothMacAdress, List cmd) async {
+    final String res = await _channel.invokeMethod('printGeneralWithActivity', {
+      "deviceName": deviceName,
+      "deviceBleutoothMacAdress": deviceBleutoothMacAdress,
+      "cmd": cmd
+    });
+    return res;
+  }
+
+
   Future<dynamic> printGeneral(
       String deviceName, String deviceBleutoothMacAdress, List cmd) async {
     final String res = await _channel.invokeMethod('printGeneral', {
