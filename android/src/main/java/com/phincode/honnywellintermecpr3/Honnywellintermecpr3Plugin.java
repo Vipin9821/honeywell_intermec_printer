@@ -12,7 +12,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-
  import android.os.AsyncTask;
  import android.annotation.SuppressLint;
 
@@ -423,11 +422,7 @@ class PrinterTaskParams {
 
 				}
 				//signature
-				lp.setBold(true);
-				lp.write("by phincode");
-				lp.setBold(false);
-				lp.newLine(2);
-				lp.newLine(2);
+				 
 				lp.write("-------------------------------------------------------");
 
  
