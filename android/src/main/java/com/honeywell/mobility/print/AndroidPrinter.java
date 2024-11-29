@@ -34,12 +34,15 @@ class AndroidPrinter implements IPrinterProxy {
    private Vector<PrintProgressListener> m_PrintProgressListeners = new Vector();
    private static ServiceConnection s_ServiceConnection = new ServiceConnection() {
       public void onServiceConnected(ComponentName className, IBinder service) {
-         Log.d("AndroidPrinter", "LinePrintService connected");
-         Logger.d("AndroidPrinter", "LinePrintService connected");
-         synchronized(AndroidPrinter.s_ServiceLock) {
+         
+           Log.d("------- CALLING CONNECTED ------", service.toString());
+         synchronized(AndroidPrinter.s_ServiceLock) {  
+            Log.d("----- SERVICE LOCK - TRUE ---------", "");
             AndroidPrinter.s_LinePrintService = ILinePrintService.Stub.asInterface(service);
             AndroidPrinter.s_ServiceLock.notify();
+             Log.d("----- NOTIFIED ,EXITING --------", "");
          }
+         Log.d("AndroidPrinter", "LinePrintService connected");
       }
 
       public void onServiceDisconnected(ComponentName className) {
@@ -697,22 +700,29 @@ class AndroidPrinter implements IPrinterProxy {
       this.newLine(1);
    }
 
-   private static void initService(Object aContext) throws PrinterException {
+   private static void initService(Object aContext) throws PrinterException {      
+      Log.d("----INSIDE initService---","");
       if (aContext instanceof Context) {
+        
          s_AppContext = ((Context)aContext).getApplicationContext();
-         if (null == s_LinePrintService) {
+         Log.d("---- SET s_AppContext DONE ---",s_AppContext.toString());
+         if (null == s_LinePrintService) { 
+            Log.d("---- INSIDE IF s_LinePrintService---","");
             synchronized(s_ServiceLock) {
                Intent serviceIntent = new Intent(ILinePrintService.class.getName());
                serviceIntent.setComponent(new ComponentName("com.intermec.print.service", "com.intermec.print.service.LinePrintService"));
+                  Log.d("----  SERVICE INTENT COMP. SET DONE---","");
+                  Log.d("----  TRYING WITH BINDING SERVICE---","");
                s_LinePrintServiceBound = s_AppContext.bindService(serviceIntent, s_ServiceConnection, 1);
+                Log.d("----    BINDING DONE  ---", Boolean.toString(s_LinePrintServiceBound));
                if (s_LinePrintServiceBound) {
-                  Logger.d("AndroidPrinter", "Bind LinePrintService succeeded");
-                  Logger.d("AndroidPrinter", "Waiting for service connected...");
+                  Log.d("AndroidPrinter", "Bind LinePrintService succeeded");
+                  Log.d("AndroidPrinter", "Waiting for service connected...");
 
                   try {
                      s_ServiceLock.wait(10000L);
                   } catch (Exception var5) {
-                     Logger.d("AndroidPrinter", var5.getMessage());
+                     Log.d("AndroidPrinter", var5.getMessage());
                   }
                }
             }
