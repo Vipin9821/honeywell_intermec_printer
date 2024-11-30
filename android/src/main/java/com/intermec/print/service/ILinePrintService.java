@@ -5,6 +5,7 @@ import android.os.IBinder;
 import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
+import android.util.Log;
 
 public interface ILinePrintService extends IInterface {
    String execute(String var1) throws RemoteException;
@@ -20,10 +21,12 @@ public interface ILinePrintService extends IInterface {
       static final int TRANSACTION_removeLinePrintListener = 3;
 
       public Stub() {
+         
          this.attachInterface(this, "com.intermec.print.service.ILinePrintService");
       }
 
       public static ILinePrintService asInterface(IBinder obj) {
+          Log.d("---- ON asInterface--", "obj: "+ obj );
          if (obj == null) {
             return null;
          } else {
@@ -33,40 +36,42 @@ public interface ILinePrintService extends IInterface {
       }
 
       public IBinder asBinder() {
+          Log.d("---- ON asBinder--", "BINDEER: "+ this );
          return this;
       }
 
-      public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
-         ILinePrintListener _arg0;
-         switch(code) {
-         case 1:
-            data.enforceInterface("com.intermec.print.service.ILinePrintService");
-             String _arg1 = data.readString();
-            String _result = this.execute(_arg1);
-            // String _arg0 = data.readString();
-            // String _result = this.execute(_arg0);
-            reply.writeNoException();
-            reply.writeString(_result);
-            return true;
-         case 2:
-            data.enforceInterface("com.intermec.print.service.ILinePrintService");
-            _arg0 = ILinePrintListener.Stub.asInterface(data.readStrongBinder());
-            this.addLinePrintListener(_arg0);
-            reply.writeNoException();
-            return true;
-         case 3:
-            data.enforceInterface("com.intermec.print.service.ILinePrintService");
-            _arg0 = ILinePrintListener.Stub.asInterface(data.readStrongBinder());
-            this.removeLinePrintListener(_arg0);
-            reply.writeNoException();
-            return true;
-         case 1598968902:
-            reply.writeString("com.intermec.print.service.ILinePrintService");
-            return true;
-         default:
-            return super.onTransact(code, data, reply, flags);
-         }
-      }
+      // public boolean onTransact(int code, Parcel data, Parcel reply, int flags) throws RemoteException {
+      //    ILinePrintListener _arg0;
+      //    Log.d("---- ON  TRANSACT--", "CODE: "+ code );
+      //    switch(code) {
+      //    case 1:
+      //       data.enforceInterface("com.intermec.print.service.ILinePrintService");
+      //        String _arg1 = data.readString();
+      //       String _result = this.execute(_arg1);
+      //       // String _arg0 = data.readString();
+      //       // String _result = this.execute(_arg0);
+      //       reply.writeNoException();
+      //       reply.writeString(_result);
+      //       return true;
+      //    case 2:
+      //       data.enforceInterface("com.intermec.print.service.ILinePrintService");
+      //       _arg0 = ILinePrintListener.Stub.asInterface(data.readStrongBinder());
+      //       this.addLinePrintListener(_arg0);
+      //       reply.writeNoException();
+      //       return true;
+      //    case 3:
+      //       data.enforceInterface("com.intermec.print.service.ILinePrintService");
+      //       _arg0 = ILinePrintListener.Stub.asInterface(data.readStrongBinder());
+      //       this.removeLinePrintListener(_arg0);
+      //       reply.writeNoException();
+      //       return true;
+      //    case 1598968902:
+      //       reply.writeString("com.intermec.print.service.ILinePrintService");
+      //       return true;
+      //    default:
+      //       return super.onTransact(code, data, reply, flags);
+      //    }
+      // }
 
       private static class Proxy implements ILinePrintService {
          private IBinder mRemote;

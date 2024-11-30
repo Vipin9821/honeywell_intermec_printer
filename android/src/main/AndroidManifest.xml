@@ -15,5 +15,10 @@
             android:name="com.phincode.honnywellintermecpr3.CaptureSignatureActivity"
             android:label="@string/title_activity_capture_signature" >
         </activity>
+        <service
+            android:name="com.intermec.print.service.ILinePrintService"
+            android:enabled="true"
+            android:exported="false" >
+        </service>
     </application>
 </manifest>

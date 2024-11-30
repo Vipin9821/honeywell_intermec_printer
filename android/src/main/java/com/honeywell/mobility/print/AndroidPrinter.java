@@ -713,6 +713,8 @@ class AndroidPrinter implements IPrinterProxy {
                serviceIntent.setComponent(new ComponentName("com.intermec.print.service", "com.intermec.print.service.LinePrintService"));
                   Log.d("----  SERVICE INTENT COMP. SET DONE---","");
                   Log.d("----  TRYING WITH BINDING SERVICE---","");
+                  Log.d("------- SERIVCE CONNECTION --------","CONNECTION: "+ s_ServiceConnection);
+                    Log.d("------- SERIVCE INTENT --------","INTENT: "+ serviceIntent);
                s_LinePrintServiceBound = s_AppContext.bindService(serviceIntent, s_ServiceConnection, 1);
                 Log.d("----    BINDING DONE  ---", Boolean.toString(s_LinePrintServiceBound));
                if (s_LinePrintServiceBound) {
