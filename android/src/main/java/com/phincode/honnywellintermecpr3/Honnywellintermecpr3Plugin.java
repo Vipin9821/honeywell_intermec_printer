@@ -81,7 +81,7 @@ public class Honnywellintermecpr3Plugin  implements FlutterPlugin, MethodCallHan
       
       } else if(call.method.equals("printGeneral")){
 
-   try{
+	try{
        String deviceName = call.argument("deviceName");
       String deviceBleutoothMacAdress = call.argument("deviceBleutoothMacAdress");
       ArrayList<String> commande = call.argument("cmd");
@@ -89,24 +89,24 @@ public class Honnywellintermecpr3Plugin  implements FlutterPlugin, MethodCallHan
       readAssetFiles();
 
 
-		PrintTask task = new PrintTask();
+					PrintTask task = new PrintTask();
 
- PrinterTaskParams params = new PrinterTaskParams(commande, deviceName,c,deviceBleutoothMacAdress);
-	
-    Log.d ("=================>EXECUTING TASK","==================");
-  			task.execute(params);
-			
- Log.d ("=================>EXECUTING DONE","==================");
+			PrinterTaskParams params = new PrinterTaskParams(commande, deviceName,c,deviceBleutoothMacAdress,result);
+				
+				Log.d ("=================>EXECUTING TASK","==================");
+						task.execute(params);
+						
+			Log.d ("=================>EXECUTING DONE","==================");
 
 
-      // Intent intent = new Intent(this.c,PrintActivity.class);
-      // intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-      // intent.putExtra("deviceName",deviceName);
-      // intent.putExtra("deviceBleutoothMacAdress",deviceBleutoothMacAdress);
-      // intent.putExtra("cmd",commande);
-      // startActivity(this.c,intent,null);
-result.success("done");
-   }
+				// Intent intent = new Intent(this.c,PrintActivity.class);
+				// intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				// intent.putExtra("deviceName",deviceName);
+				// intent.putExtra("deviceBleutoothMacAdress",deviceBleutoothMacAdress);
+				// intent.putExtra("cmd",commande);
+				// startActivity(this.c,intent,null);
+			// result.success("done");
+			}
    catch( Exception e){
            System.out.println(e);
                 // Handle communications error here.
@@ -199,12 +199,14 @@ class PrinterTaskParams {
     String printerName;
     String printerAddresss;
     Context cont;
+	Result result;
 
-    PrinterTaskParams(ArrayList<String> linesToPrint, String printerHeader, Context cont  , String printerAddresss) {
+    PrinterTaskParams(ArrayList<String> linesToPrint, String printerHeader, Context cont  , String printerAddresss,Result result) {
         this.linesToPrint = linesToPrint;
         this.printerName = printerName;
         this.printerAddresss = printerAddresss;
         this.cont = cont;
+		this.result = result;
     }
 }
 	public class PrintTask extends AsyncTask<PrinterTaskParams, Integer, String> {
@@ -249,10 +251,12 @@ class PrinterTaskParams {
 			LinePrinter lp = null;
 			String sResult = null;
 
-      PrinterTaskParams param = args[0];
+      		PrinterTaskParams param = args[0];
 			String sPrinterID = param.printerName;
 			String sPrinterAddr = param.printerAddresss;
-      ArrayList<String> commande = param.linesToPrint;
+      		ArrayList<String> commande = param.linesToPrint;
+			Result flutterResult = param.result;
+
       Context lContext = param.cont;
 			String sDocNumber = "1234567890";
 			String sPrinterURI = null;
@@ -288,11 +292,11 @@ class PrinterTaskParams {
 			// 	// The printer address should be a serial port name.
 			// 	sPrinterURI = "serial://" + sPrinterAddr;
 			// }
- Log.d("------------ LP CONTEXT","-----------");
-			LinePrinter.ExtraSettings exSettings = new LinePrinter.ExtraSettings();
+			Log.d("------------ LP CONTEXT","-----------");
+						LinePrinter.ExtraSettings exSettings = new LinePrinter.ExtraSettings();
 
-			exSettings.setContext(lContext);
- Log.d("------------ LP DONE CONTEXT","-----------");
+						exSettings.setContext(lContext);
+			Log.d("------------ LP DONE CONTEXT","-----------");
 			PrintProgressListener progressListener =
 				new PrintProgressListener()
 				{
@@ -306,15 +310,15 @@ class PrinterTaskParams {
 
 			try
 			{
-        Log.d("------------ LP PRINT","-----------");
-        // Log.d("PRINTER NAME",param.printerName.toString());
-         Log.d("PRINTER ADD",sPrinterURI);
+			Log.d("------------ LP PRINT","-----------");
+			// Log.d("PRINTER NAME",param.printerName.toString());
+			Log.d("PRINTER ADD",sPrinterURI);
 				lp = new LinePrinter(
 						jsonCmdAttribStr,
 						"PR3",
 						sPrinterURI,
 						exSettings);
-  Log.d("------------ LP PRINT= INIT DONE","-----------");
+  			Log.d("------------ LP PRINT= INIT DONE","-----------");
 				// Registers to listen for the print progress events.
 				lp.addPrintProgressListener(progressListener);
 
@@ -428,6 +432,7 @@ class PrinterTaskParams {
  
 
 				sResult = "Number of bytes sent to printer: " + lp.getBytesWritten();
+				// flutterResult.success("PRINT DONE");
 			}
 			// catch (Exception ex)
 			// {
@@ -438,6 +443,7 @@ class PrinterTaskParams {
 			catch (LinePrinterException ex)
 			{
 				sResult = "LinePrinterException: " + ex.getMessage();
+				flutterResult.error("Intermec Error: ",sResult,null);
 			}
 			catch (Exception ex)
 			{
@@ -445,6 +451,7 @@ class PrinterTaskParams {
 					sResult = "Unexpected exception: " + ex.getMessage();
 				else
 					sResult = "Unexpected exception.";
+				flutterResult.error("Intermec Error: ",sResult,null);
 			}
 			finally
 			{
@@ -453,12 +460,15 @@ class PrinterTaskParams {
 					try
 					{
 						lp.disconnect();  // Disconnects from the printer
-						lp.close();  // Releases resources
+						lp.close();  
+						flutterResult.success("SUCCESS");// Releases resources
 					}
-					catch (Exception ex) {}
+					catch (Exception ex) {
+						flutterResult.error("Disconnect Error - Intermec: ",sResult,null);
+					}
 				}
 			}
-Log.d("===========> RESULT",sResult);
+				Log.d("===========> RESULT",sResult);
 			// The result string will be passed to the onPostExecute method
 			// for display in the the Progress and Status text box.
 			return sResult;

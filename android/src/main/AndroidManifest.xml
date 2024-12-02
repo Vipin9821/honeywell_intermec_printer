@@ -16,7 +16,7 @@
             android:label="@string/title_activity_capture_signature" >
         </activity>
         <service
-            android:name="com.intermec.print.service.ILinePrintService"
+            android:name="com.intermec.print.service.LinePrintService"
             android:enabled="true"
             android:exported="false" >
         </service>
