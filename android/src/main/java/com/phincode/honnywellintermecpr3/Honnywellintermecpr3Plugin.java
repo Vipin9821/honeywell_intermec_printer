@@ -52,34 +52,35 @@ public class Honnywellintermecpr3Plugin  implements FlutterPlugin, MethodCallHan
  
   @Override
   public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
-    if (call.method.equals("printImg")) {
+    // if (call.method.equals("printImg")) {
 
-      String deviceName = call.argument("deviceName");
-      String deviceBleutoothMacAdress = call.argument("deviceBleutoothMacAdress");
-      String imageb64 = call.argument("imageb64");
-      Intent intent = new Intent(this.c,PrintActivity.class);
-      intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-      intent.putExtra("deviceName",deviceName);
-      intent.putExtra("deviceBleutoothMacAdress",deviceBleutoothMacAdress);
-      intent.putExtra("imageb64",imageb64);
-      startActivity(this.c,intent,null);
+    //   String deviceName = call.argument("deviceName");
+    //   String deviceBleutoothMacAdress = call.argument("deviceBleutoothMacAdress");
+    //   String imageb64 = call.argument("imageb64");
+    //   Intent intent = new Intent(this.c,PrintActivity.class);
+    //   intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    //   intent.putExtra("deviceName",deviceName);
+    //   intent.putExtra("deviceBleutoothMacAdress",deviceBleutoothMacAdress);
+    //   intent.putExtra("imageb64",imageb64);
+    //   startActivity(this.c,intent,null);
 
 
 
-    } else if(call.method.equals("printGeneralWithActivity")){ 
+    // } else if(call.method.equals("printGeneralWithActivity")){ 
 
-      String deviceName = call.argument("deviceName");
-      String deviceBleutoothMacAdress = call.argument("deviceBleutoothMacAdress");
-      ArrayList<String> commande = call.argument("cmd");
-      Log.d ("cmd",commande.toString());
-      Intent intent = new Intent(this.c,PrintActivity.class);
-      intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-      intent.putExtra("deviceName",deviceName);
-      intent.putExtra("deviceBleutoothMacAdress",deviceBleutoothMacAdress);
-      intent.putExtra("cmd",commande);
-      startActivity(this.c,intent,null);
+    //   String deviceName = call.argument("deviceName");
+    //   String deviceBleutoothMacAdress = call.argument("deviceBleutoothMacAdress");
+    //   ArrayList<String> commande = call.argument("cmd");
+    //   Log.d ("cmd",commande.toString());
+    //   Intent intent = new Intent(this.c,PrintActivity.class);
+    //   intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    //   intent.putExtra("deviceName",deviceName);
+    //   intent.putExtra("deviceBleutoothMacAdress",deviceBleutoothMacAdress);
+    //   intent.putExtra("cmd",commande);
+    //   startActivity(this.c,intent,null);
       
-      } else if(call.method.equals("printGeneral")){
+    //   } else 
+	  if(call.method.equals("printGeneral")){
 
 	try{
        String deviceName = call.argument("deviceName");
@@ -224,7 +225,7 @@ class PrinterTaskParams {
 		@Override
 		protected void onPreExecute()
 		{
-      Log.d("=============> PRE-EXECUTE", "==================");
+      		Log.d("=============> PRE-EXECUTE", "==================");
 			// Clears the Progress and Status text box.
 			// textMsg.setText("");
 
@@ -257,7 +258,7 @@ class PrinterTaskParams {
       		ArrayList<String> commande = param.linesToPrint;
 			Result flutterResult = param.result;
 
-      Context lContext = param.cont;
+      		Context lContext = param.cont;
 			String sDocNumber = "1234567890";
 			String sPrinterURI = null;
 
@@ -293,9 +294,9 @@ class PrinterTaskParams {
 			// 	sPrinterURI = "serial://" + sPrinterAddr;
 			// }
 			Log.d("------------ LP CONTEXT","-----------");
-						LinePrinter.ExtraSettings exSettings = new LinePrinter.ExtraSettings();
+			LinePrinter.ExtraSettings exSettings = new LinePrinter.ExtraSettings();
 
-						exSettings.setContext(lContext);
+			exSettings.setContext(lContext);
 			Log.d("------------ LP DONE CONTEXT","-----------");
 			PrintProgressListener progressListener =
 				new PrintProgressListener()
@@ -311,8 +312,6 @@ class PrinterTaskParams {
 			try
 			{
 			Log.d("------------ LP PRINT","-----------");
-			// Log.d("PRINTER NAME",param.printerName.toString());
-			Log.d("PRINTER ADD",sPrinterURI);
 				lp = new LinePrinter(
 						jsonCmdAttribStr,
 						"PR3",
@@ -340,23 +339,23 @@ class PrinterTaskParams {
 
 				// Check the state of the printer and abort printing if there are
 				// any critical errors detected.
-				int[] results = lp.getStatus();
-				if (results != null)
-				{
-					for (int err = 0; err < results.length; err++)
-					{
-						if (results[err] == 223)
-						{
-							// Paper out.
-							// throw new BadPrinterStateException("Paper out");
-						}
-						else if (results[err] == 227)
-						{
-							// Lid open.
-							// throw new BadPrinterStateException("Printer lid open");
-						}
-					}
-				}
+				// int[] results = lp.getStatus();
+				// if (results != null)
+				// {
+				// 	for (int err = 0; err < results.length; err++)
+				// 	{
+				// 		if (results[err] == 223)
+				// 		{
+				// 			// Paper out.
+				// 			// throw new BadPrinterStateException("Paper out");
+				// 		}
+				// 		else if (results[err] == 227)
+				// 		{
+				// 			// Lid open.
+				// 			// throw new BadPrinterStateException("Printer lid open");
+				// 		}
+				// 	}
+				// }
 					int ofset=0;
 					int widh=0;
 					int heigh=0;
@@ -425,12 +424,7 @@ class PrinterTaskParams {
 					}
 
 				}
-				//signature
 				 
-				lp.write("-------------------------------------------------------");
-
- 
-
 				sResult = "Number of bytes sent to printer: " + lp.getBytesWritten();
 				// flutterResult.success("PRINT DONE");
 			}
