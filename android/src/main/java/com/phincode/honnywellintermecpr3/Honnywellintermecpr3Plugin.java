@@ -251,6 +251,7 @@ class PrinterTaskParams {
 		{
 			LinePrinter lp = null;
 			String sResult = null;
+			Boolean connectionStatus = null;
 
       		PrinterTaskParams param = args[0];
 			String sPrinterID = param.printerName;
@@ -327,15 +328,20 @@ class PrinterTaskParams {
 				while(numtries < maxretry)
 				{
 					try{
-						lp.connect();  // Connects to the printer
+					  	lp.connect();  // Connects to the printer
+						connectionStatus = true;
 						break;
 					}
 					catch(LinePrinterException ex){
 						numtries++;
+						connectionStatus = false;
 						Thread.sleep(1000);
 					}
 				}
-				if (numtries == maxretry) lp.connect();//Final retry
+				if (numtries == maxretry) {
+					lp.connect();//Final retry
+					connectionStatus = true;
+				}
 
 				// Check the state of the printer and abort printing if there are
 				// any critical errors detected.
@@ -449,7 +455,7 @@ class PrinterTaskParams {
 			}
 			finally
 			{
-				if (lp != null)
+				if (lp != null && connectionStatus)
 				{
 					try
 					{
@@ -458,7 +464,8 @@ class PrinterTaskParams {
 						flutterResult.success("SUCCESS");// Releases resources
 					}
 					catch (Exception ex) {
-						flutterResult.error("Disconnect Error - Intermec: ",sResult,null);
+						Log.d("===========> ERROR IS DISCONNECTIN","");
+						// flutterResult.error("Disconnect Error - Intermec: ",sResult,null);
 					}
 				}
 			}
